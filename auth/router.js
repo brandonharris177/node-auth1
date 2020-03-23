@@ -18,6 +18,22 @@ router.post('/register', (req, res) => {
     })
 })
 
+router.post('/login', (req, res) => {
+   const {username, password} = req.body;
+
+   Users.findBy({username})
+   .then(([user]) => {
+     if (user && bcrypt.compareSync(password, user.password)) {
+       res.status(200).json(user)
+     } else {
+       res.status(401).json({ message: "invalid credentials" })
+     }
+   })
+   .catch(error => {
+     res.status(500).json(error)
+   })
+})
+
 router.get("/", (req, res) => {
   Users.find()
     .then(users => {
